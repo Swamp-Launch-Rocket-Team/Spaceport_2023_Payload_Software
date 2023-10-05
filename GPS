@@ -1,0 +1,44 @@
+#include <Adafruit_GPS.h>
+#include <SoftwareSerial.h>
+
+SoftwareSerial mySerial(24,23);
+Adafruit_GPS GPS(&mySerial);
+
+char c;
+void setup() {
+  Serial.begin(9600);
+  GPS.begin(9600);
+  GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCONLY);
+  GPS.sendCommand(PMTK_SET_NMEA_UPDATE_5HZ);
+  delay(1000);
+}
+
+void loop() {
+
+  clearGPS();
+  while (!GPS.newNMEAreceived()){
+    c = GPS.read();
+  }
+
+  GPS.parse(GPS.lastNMEA());
+  if (GPS.fix) {
+    Serial.print('Location: ');
+    Serial.print(GPS.latitudeDegrees , 4);
+    Serial.print(', ');
+    Serial.print(GPS.longitudeDegrees, 4);
+  }
+}
+
+void clearGPS() {
+  while (!GPS.newNMEAreceived()){
+    c = GPS.read();
+  }
+  GPS.parse(GPS.lastNMEA());
+
+  while (!GPS.newNMEAreceived()){
+    c = GPS.read();
+  }
+  GPS.parse(GPS.lastNMEA()); 
+}
+
+
