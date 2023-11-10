@@ -1,0 +1,54 @@
+#include <Adafruit_GPS.h>
+#include <SoftwareSerial.h>
+#include <SD.h> 
+File logFile
+
+SoftwareSerial mySerial(19,18);
+Adafruit_GPS GPS(&mySerial);
+
+char c;
+void setup() {
+  Serial.begin(115200);
+  GPS.begin(9600);
+  GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCONLY);
+  GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);
+  delay(1000);
+}
+
+void loop() {
+
+  //clearGPS();
+  if (!GPS.newNMEAreceived())  {
+    c = GPS.read();
+  }
+
+  GPS.parse(GPS.lastNMEA());  
+  if (GPS.fix) {
+    Serial.print("Location: ");
+    Serial.print(GPS.latitudeDegrees , 4);
+    Serial.print(', ');
+    Serial.print(GPS.longitudeDegrees, 4);
+    logFile = SD.open("gpsLogFile.txt", FILE_WRITE)
+    if (logFile){
+      logFile.print("Lat/Long:");
+      logFile.println(GPS.latitudeDegrees, 4);
+      logFile.print(", ");
+      logFile.println(GPS.longitudeDegrees, 4);
+      logFile.close();
+
+    }
+    file = SD.open("file.txt", FILE_READ); 
+    if (file) {
+      Serial.println("--- Reading start ---");
+      char character;
+      while ((character = file.read()) != -1) { 
+        Serial.print(character);
+    }
+    file.close();
+    Serial.println("--- Reading end ---");
+
+  }
+}
+
+
+
