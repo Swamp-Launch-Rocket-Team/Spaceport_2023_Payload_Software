@@ -37,7 +37,7 @@ void loop() {
       logFile.close();
 
     }
-    file = SD.open("file.txt", FILE_READ); 
+    file = SD.open("gpsLogFile.txt", FILE_READ); 
     if (file) {
       Serial.println("--- Reading start ---");
       char character;
