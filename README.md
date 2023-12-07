@@ -16,17 +16,17 @@ To clone this repository:
 
   `git checkout -b your-branch-name`
 
-3. Make your changes in this branch. You can check which files have changed with:
+2. Make your changes in this branch. You can check which files have changed with:
 
   `git status`
 
-5. Stage your changes for a commit:
+3. Stage your changes for a commit:
 
   `git add .`
 
 Alternatively, add individual files using `git add <filename>`.
 
-7. Commit your changes with a meaningful message:
+4. Commit your changes with a meaningful message:
 
   `git commit -m "A brief description of changes"`
 
@@ -35,7 +35,7 @@ Alternatively, add individual files using `git add <filename>`.
 
   `git pull origin main`
 
-3. Push your branch and changes to the GitHub repository:
+2. Push your branch and changes to the GitHub repository:
 
   `git push origin your-branch-name`
 
