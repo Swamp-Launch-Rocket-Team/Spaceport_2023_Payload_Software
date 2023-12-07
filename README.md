@@ -5,9 +5,9 @@
 This README outlines the basic Git workflow for collaborating on this project.
 
 ### Cloning the Repository
-To clone the repository:
-`git clone https://github.com/your-username/your-repository.git`
-`cd your-repository`
+To clone this repository:
+`git clone https://github.com/Swamp-Launch-Rocket-Team/Spaceport_2023_Payload_Software.git`
+`cd Spaceport_2023_Payload_Software`
 
 ## Making Changes
 1. Create a new branch for your work:
@@ -17,7 +17,7 @@ To clone the repository:
 `git status`
 
 3. Stage your changes for a commit:
-git add .
+`git add .`
 Alternatively, add individual files using `git add <filename>`.
 
 4. Commit your changes with a meaningful message:
