@@ -14,35 +14,35 @@ To clone this repository:
 ## Making Changes
 1. Create a new branch for your work:
 
-`git checkout -b your-branch-name`
+  `git checkout -b your-branch-name`
 
 3. Make your changes in this branch. You can check which files have changed with:
 
-`git status`
+  `git status`
 
 5. Stage your changes for a commit:
 
-`git add .`
+  `git add .`
 
 Alternatively, add individual files using `git add <filename>`.
 
 7. Commit your changes with a meaningful message:
 
-`git commit -m "A brief description of changes"`
+  `git commit -m "A brief description of changes"`
 
 ## Pushing to GitHub
 1. Make sure your local branch is up to date with the main branch:
 
-`git pull origin main`
+  `git pull origin main`
 
 3. Push your branch and changes to the GitHub repository:
 
-`git push origin your-branch-name`
+  `git push origin your-branch-name`
 
 ## Collaborating
 - To incorporate the latest changes from the main branch into your branch, regularly run:
 
-`git pull origin main`
+  `git pull origin main`
 
 - When your feature or fix is ready, push your branch and create a pull request on GitHub for review.
 
