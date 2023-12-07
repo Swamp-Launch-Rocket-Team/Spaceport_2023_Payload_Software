@@ -11,6 +11,10 @@ To clone this repository:
 
 `cd Spaceport_2023_Payload_Software`
 
+To switch to this branch (sean-working):
+
+`git checkout sean-working`
+
 ## Making Changes
 1. Create a new branch for your work:
 
