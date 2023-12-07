@@ -7,6 +7,7 @@ This README outlines the basic Git workflow for collaborating on this project.
 ### Cloning the Repository
 To clone this repository:
 `git clone https://github.com/Swamp-Launch-Rocket-Team/Spaceport_2023_Payload_Software.git`
+
 `cd Spaceport_2023_Payload_Software`
 
 ## Making Changes
