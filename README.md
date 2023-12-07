@@ -6,33 +6,42 @@ This README outlines the basic Git workflow for collaborating on this project.
 
 ### Cloning the Repository
 To clone this repository:
+
 `git clone https://github.com/Swamp-Launch-Rocket-Team/Spaceport_2023_Payload_Software.git`
 
 `cd Spaceport_2023_Payload_Software`
 
 ## Making Changes
 1. Create a new branch for your work:
+
 `git checkout -b your-branch-name`
 
-2. Make your changes in this branch. You can check which files have changed with:
+3. Make your changes in this branch. You can check which files have changed with:
+
 `git status`
 
-3. Stage your changes for a commit:
+5. Stage your changes for a commit:
+
 `git add .`
+
 Alternatively, add individual files using `git add <filename>`.
 
-4. Commit your changes with a meaningful message:
+7. Commit your changes with a meaningful message:
+
 `git commit -m "A brief description of changes"`
 
 ## Pushing to GitHub
 1. Make sure your local branch is up to date with the main branch:
+
 `git pull origin main`
 
-2. Push your branch and changes to the GitHub repository:
+3. Push your branch and changes to the GitHub repository:
+
 `git push origin your-branch-name`
 
 ## Collaborating
 - To incorporate the latest changes from the main branch into your branch, regularly run:
+
 `git pull origin main`
 
 - When your feature or fix is ready, push your branch and create a pull request on GitHub for review.
