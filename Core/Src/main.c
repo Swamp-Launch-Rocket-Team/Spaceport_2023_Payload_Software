@@ -20,6 +20,7 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include "spi.h"
+#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -61,12 +62,55 @@ void MX_FREERTOS_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-//axises my_gyro;
-//axises my_accel;
-//axises my_mag;
-//uint8_t val1;
-//uint8_t val2;
+axises my_gyro;
+axises my_accel;axises my_mag;
+uint8_t val1;
+uint8_t val2;
 /* USER CODE END 0 */
+
+void servo(void)
+{
+	int i = 25;
+		HAL_Delay(1000);
+
+		while (i<125)
+		{
+			htim2.Instance -> CCR1=i;
+			i++;
+			HAL_Delay(100);
+		}
+}
+
+void imuData(void)
+{
+	char tx_buffer[100];  // Buffer for UART transmission
+
+// Read accelerometer data
+	  icm20948_accel_read(&my_accel);
+//////	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, SET);
+//////	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, RESET);
+//////	  HAL_SPI_Transmit(&hspi2, &read_reg, 1, 1000);
+//////	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, SET);
+////
+	  float temp_x = my_accel.x;
+	  float temp_y = my_accel.y;
+	  float temp_z = my_accel.z;
+//////
+//////	  // Format accelerometer data into a string
+	  sprintf(tx_buffer, "X: %f, Y: %f, Z: %f\r\n", my_accel.x, my_accel.y, my_accel.z);
+	  sprintf(tx_buffer, "%f", my_accel.x);
+//////	  // Transmit accelerometer data over UART
+	  HAL_UART_Transmit(&huart5, (uint8_t *)tx_buffer, strlen(tx_buffer), 1000);
+//
+//	  // Delay to control data rate
+	  HAL_Delay(500);
+
+}
+
+void pressure(void)
+{
+
+}
 
 /**
   * @brief  The application entry point.
@@ -98,12 +142,14 @@ int main(void)
   MX_GPIO_Init();
   MX_SPI2_Init();
   MX_UART5_Init();
+  MX_TIM1_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-//  icm20948_init();
+  icm20948_init();
 //  ak09916_init();
 
 //  char *message = "Hello World!\r\n";
-//  char tx_buffer[100];  // Buffer for UART transmission
+  //char tx_buffer[100];  // Buffer for UART transmission
 
 //  uint8_t read_reg = 0x80;
 //  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, SET);
@@ -124,36 +170,19 @@ int main(void)
   // this while is never reached
   while (1)
   {
-  }
+
 ////	  HAL_UART_Transmit(&huart5, (uint8_t *)message, strlen(message), 1000);
-////
+
 ////	  HAL_Delay(1000);
-//
-//
-//	  // Read accelerometer data
-////	  icm20948_accel_read(&my_accel);
-//////	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, SET);
-//////	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, RESET);
-//////	  HAL_SPI_Transmit(&hspi2, &read_reg, 1, 1000);
-//////	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, SET);
-////
-////	  float temp_x = my_accel.x;
-////	  float temp_y = my_accel.y;
-////	  float temp_z = my_accel.z;
-//////
-//////	  // Format accelerometer data into a string
-//////	  sprintf(tx_buffer, "X: %f, Y: %f, Z: %f\r\n", my_accel.x, my_accel.y, my_accel.z);
-////	  sprintf(tx_buffer, "%f", my_accel.x);
-//////	  // Transmit accelerometer data over UART
-////	  HAL_UART_Transmit(&huart5, (uint8_t *)tx_buffer, strlen(tx_buffer), 1000);
-//
-//	  // Delay to control data rate
-//	  HAL_Delay(500);
-//
+
+	  imuData();
+	  servo();
+
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-//  }
+  }
   /* USER CODE END 3 */
 }
 

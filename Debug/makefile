@@ -64,8 +64,8 @@ all: main-build
 main-build: swamplaunch_chip.elf secondary-outputs
 
 # Tool invocations
-swamplaunch_chip.elf swamplaunch_chip.map: $(OBJS) $(USER_OBJS) C:\Users\srmtr\STM32CubeIDE\workspace_1.13.2\swamplaunch_chip\STM32H725VGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "swamplaunch_chip.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"C:\Users\srmtr\STM32CubeIDE\workspace_1.13.2\swamplaunch_chip\STM32H725VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="swamplaunch_chip.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
+swamplaunch_chip.elf swamplaunch_chip.map: $(OBJS) $(USER_OBJS) C:\Users\13527\OneDrive\ -\ University\ of\ Florida\Desktop\University\ of\ Florida\Swamp\ Launch\code\Spaceport_2023_Payload_Software\STM32H725VGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "swamplaunch_chip.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"C:\Users\13527\OneDrive - University of Florida\Desktop\University of Florida\Swamp Launch\code\Spaceport_2023_Payload_Software\STM32H725VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="swamplaunch_chip.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
