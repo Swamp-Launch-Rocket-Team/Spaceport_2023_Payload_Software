@@ -24,6 +24,7 @@
 #include "usart.h"
 #include "gpio.h"
 
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "icm20948.h"
@@ -40,6 +41,9 @@
 /* USER CODE BEGIN PD */
 #define ICM20948_SPI_CS_PIN_PORT		GPIOB
 #define ICM20948_SPI_CS_PIN_NUMBER		GPIO_PIN_12
+
+#define LPS25HBTR_CS_PIN GPIO_PIN_4
+#define LPS25HBTR_CS_PORT GPIOA
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -66,7 +70,56 @@ axises my_gyro;
 axises my_accel;axises my_mag;
 uint8_t val1;
 uint8_t val2;
-/* USER CODE END 0 */
+
+uint8_t SPI_TransmitReceive(SPI_HandleTypeDef* hspi, uint8_t data) {
+  uint8_t rxData;
+  HAL_SPI_TransmitReceive(hspi, &data, &rxData, 1, HAL_MAX_DELAY);
+  return rxData;
+}
+
+float readPressure(void) {
+  uint8_t data[3];
+  int32_t pressure_raw;
+
+  HAL_GPIO_WritePin(LPS25HBTR_CS_PORT, LPS25HBTR_CS_PIN, GPIO_PIN_RESET); // CS Low
+
+  SPI_TransmitReceive(&hspi2, 0xB8); // Read command
+  data[0] = SPI_TransmitReceive(&hspi2, 0xFF);
+  data[1] = SPI_TransmitReceive(&hspi2, 0xFF);
+  data[2] = SPI_TransmitReceive(&hspi2, 0xFF);
+
+  HAL_GPIO_WritePin(LPS25HBTR_CS_PORT, LPS25HBTR_CS_PIN, GPIO_PIN_SET); // CS High
+
+  // Combine the 24-bit pressure data
+  pressure_raw = (int32_t)((data[2] << 16) | (data[1] << 8) | data[0]);
+
+  // Pressure conversion (depends on sensor characteristics)
+  float pressure_hPa = pressure_raw / 4096.0; // Example conversion, check LPS25HBTR datasheet
+
+  return pressure_hPa;
+}
+
+float convertPressureToAltitude(float pressure) {
+  // Implement altitude conversion based on the barometric formula
+  // This depends on your application requirements and environmental conditions
+  // Example conversion, consider temperature and sea level pressure
+  float altitude_meters = 44330.0 * (1.0 - pow((pressure / 1013.25), 0.1903));
+
+  return altitude_meters;
+}
+
+void pressure(void)
+{
+	float pressure_hPa = readPressure();
+	float altitude_meters = convertPressureToAltitude(pressure_hPa);
+
+	printf("Pressure: %.2f hPa\n", pressure_hPa);
+	printf("Altitude: %.2f meters\n", altitude_meters);
+
+	HAL_Delay(1000);
+
+}
+
 
 void servo(void)
 {
@@ -107,10 +160,8 @@ void imuData(void)
 
 }
 
-void pressure(void)
-{
 
-}
+/* USER CODE END 0 */
 
 /**
   * @brief  The application entry point.
@@ -145,7 +196,14 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-  icm20948_init();
+  icm20948_init(); 	//IMU
+
+  LPS25HBTR_Init();	//BAROMETER
+
+
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);	//MOTOR
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);	//MOTOR
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);	//MOTOR
 //  ak09916_init();
 
 //  char *message = "Hello World!\r\n";
@@ -157,10 +215,10 @@ int main(void)
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in freertos.c) */
-  MX_FREERTOS_Init();
+  //MX_FREERTOS_Init();
 
   /* Start scheduler */
-  osKernelStart();
+  //osKernelStart();
 
   /* We should never get here as control is now taken by the scheduler */
   /* Infinite loop */
@@ -177,6 +235,7 @@ int main(void)
 
 	  imuData();
 	  servo();
+	  pressure();
 
 
     /* USER CODE END WHILE */
@@ -245,8 +304,34 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void LPS25HBTR_Init(void) {
+  // Perform LPS25HBTR initialization (if needed)
+  // This may involve writing to control registers, setting output data rate, etc.
+  // Refer to LPS25HBTR datasheet and reference manual.
+}
 
 /* USER CODE END 4 */
+
+/**
+  * @brief  Period elapsed callback in non blocking mode
+  * @note   This function is called  when TIM3 interrupt took place, inside
+  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
+  * a global variable "uwTick" used as application time base.
+  * @param  htim : TIM handle
+  * @retval None
+  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  /* USER CODE BEGIN Callback 0 */
+
+  /* USER CODE END Callback 0 */
+  if (htim->Instance == TIM3) {
+    HAL_IncTick();
+  }
+  /* USER CODE BEGIN Callback 1 */
+
+  /* USER CODE END Callback 1 */
+}
 
 /**
   * @brief  This function is executed in case of error occurrence.
