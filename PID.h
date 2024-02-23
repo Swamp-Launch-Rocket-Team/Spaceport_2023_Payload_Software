@@ -1,3 +1,5 @@
+* This was taken from a very similar reaction wheel system
+
 /**
  * This file is an ultra light/simple PID controller
  * library for Arduino.
