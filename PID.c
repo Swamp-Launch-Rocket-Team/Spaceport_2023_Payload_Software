@@ -1,62 +1,37 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include "pid.h"
 
-void PIDImpl_init(PIDImpl *pid, double dt, double max, double min, double Kp, double Kd, double Ki) {
-    pid->dt = dt;
-    pid->max = max;
-    pid->min = min;
-    pid->Kp = Kp;
-    pid->Kd = Kd;
-    pid->Ki = Ki;
-    pid->pre_error = 0;
-    pid->integral = 0;
+// Angular PID Controller
+
+// Angular Position PID constants
+#define Kp 1.0
+#define Ki 0.1
+#define Kd 0.01
+
+// Function to calculate the speed based on the current position and setpoint
+float calculateSpeed(float position, float setpoint, float *prev_error, float *integral) {
+    float error = setpoint - position;
+    *integral += error;
+    float derivative = error - *prev_error;
+    *prev_error = error;
+    return (Kp * error) + (Ki * (*integral)) + (Kd * derivative);
 }
 
-double PIDImpl_calculate(PIDImpl *pid, double setpoint, double pv) {
-    // Calculate error
-    double error = setpoint - pv;
+int main() {
+    float position = 0.0;  // Current angular position
+    float setpoint = 90.0; // Desired angular position
+    float prev_error = 0.0;
+    float integral = 0.0;
+    float measured_speed = 50.0;  // Example value for measured speed
+    float rollspeed = 60.0;  // Example value for roll speed
 
-    // Proportional term
-    double Pout = pid->Kp * error;
-
-    // Integral term
-    pid->integral += error * pid->dt;
-    double Iout = pid->Ki * pid->integral;
-
-    // Derivative term
-    double derivative = (error - pid->pre_error) / pid->dt;
-    double Dout = pid->Kd * derivative;
-
-    // Calculate total output
-    double output = Pout + Iout + Dout;
-
-    // Restrict to max/min
-    if (output > pid->max)
-        output = pid->max;
-    else if (output < pid->min)
-        output = pid->min;
-
-    // Save error to previous error
-    pid->pre_error = error;
-
-    return output;
-}
-
-void PID_init(PID *pid, double dt, double max, double min, double Kp, double Kd, double Ki) {
-    pid->pimpl = (PIDImpl *)malloc(sizeof(PIDImpl));
-    if (pid->pimpl == NULL) {
-        fprintf(stderr, "Failed to allocate memory for PIDImpl\n");
-        exit(1);
+    // Checks if payload is rolling or not
+    if (measured_speed < rollspeed) {
+        // Calculate the speed based on the current position and setpoint
+        float speed = calculateSpeed(position, setpoint, &prev_error, &integral);
+        // Output the speed
+        printf("Speed: %.2f\n", speed);
     }
-    PIDImpl_init(pid->pimpl, dt, max, min, Kp, Kd, Ki);
+
+    return 0;
 }
 
-double PID_calculate(PID *pid, double setpoint, double pv) {
-    return PIDImpl_calculate(pid->pimpl, setpoint, pv);
-}
-
-void PID_destroy(PID *pid) {
-    free(pid->pimpl);
-}
